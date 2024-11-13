@@ -1,0 +1,189 @@
+               Replication instructions for
+      "The Structure of the U.S. Income Distribution"
+                     Conrad Kosowsky
+
+                          ***
+
+This file is REPLICATION.txt from the Github repository
+structure-us-incomes, which is available at
+
+https://github.com/ckosowsky/structure-us-incomes
+
+This file contains replication instructions for "The Structure
+of the U.S. Income Distribution" by Conrad Kosowsky. You can
+replicate the results of the paper using three different
+approaches depending on your research goals. See also the pdf
+documentation files income_figs.pdf and estimate_parameters.pdf
+for more information about the code used in the paper. Throughout
+this file, the term repository refers to the structure-us-incomes
+repository. See also README.txt from the repository for file
+information.
+
+                          ***
+
+                  1. Replicate figures
+
+To exactly replicate the figures used in the paper, you should
+download output_request.xlsx and income_figs.py from the
+repository. Then put both files in the same directory and run
+income_figs.py through Python. Doing so will produce the figures
+used in the paper.
+
+                          ***
+
+                  2. Replicate results
+
+The paper uses internal U.S. Census Bureau microdata, so you
+will not be able to analyze the same data that went into the
+paper. (Unless you are a U.S. Census Bureau employee, in which
+case you should contact your local FSRDC administrator or your
+supervisor.) That being said, you can run the same analysis
+from the paper on publicly available Current Population Survey
+microdata files. You will not see exactly the same results
+because the public microdata is slightly different from the
+internal U.S. Census Bureau microdata files, but the results
+will be very similar.
+
+To perform this type of replication, you should:
+
+  (1) Pick a directory where you want to run the replication.
+      Then download each data_extracts zip file from the
+      repository, save them in the directory, and unzip them.
+      You should see four folders called data_extracts<number>.
+
+  (2) Remove all data_<year>.txt files from each data_extracts
+      folder and put them in the directory where you want to
+      perform the replication.
+
+  (3) Download the following files from the repository and put
+      them in the directory:
+
+        i.   bin.py
+        ii.  bootstrap.py
+        iii. check_constants.py
+        iv.  estimate_parameters.py
+        v.   main.py
+        vi.  make_figures.py
+
+  (4) Run Python on main.py. It should print a warning message
+      saying the current run will not do anything, and you
+      should set the appropriate do_ booleans to true if you
+      want to enable data analysis. Here is what that means:
+      the beginning of main.py contains 10 true-false switches
+      that govern the behavior of the file. Initially they are
+      all set to False, so the file does nothing. Changing some
+      or all of them to True will tell Python which results you
+      want to replicate. The switches are:
+
+        i.    do_load_data: This switch determines whether
+              Python loads the data extracts for each year. It
+              should generally be set to True.
+
+        ii.   do_2023_short: When set to True, Python will 
+              estimate parameters using 2023 data for the 
+              models that do not take very much time to 
+              estimate.
+
+        iii.  do_2023_long: When set to True, Python will
+              estimate parameters using 2023 data for the
+              models that take a long time to estimate. (You
+              may be waiting up to 2 days for the program to
+              finish.)
+
+        iv.   do_Fisk: When set to True, Python will estimate
+              parameters of the Fisk distribution for all
+              years of data.
+
+        v.    do_InvG: When set to True, Python will estimate
+              parameters of the inverse-gamma distribution
+              for all years of data.
+
+        vi.   do_CS_InvG: When set to True, Python will estimate
+              parameters of the constant-scale inverse-gamma
+              distribution for all years of data. This model
+              didn't make its way into the paper, but I've left
+              the code in the file in case it is useful for
+              someone.
+
+        vii.  do_CSS_InvG: When set to True, Python will
+              estimate parameters of the constant-shift-scale
+              inverse-gamma distribution for all years of data.
+              You must have previously run (or be currently
+              running) main.py with do_InvG set to True.
+
+        viii. do_bootstrap: When set to True, Python will do
+              a bootstrap estimation of standard errors for
+              the constant-shift-scale inverse-gamma model.
+              You must have previously run (or be currently
+              running) main.py with do_CSS_InvG set to True.
+
+        ix.   do_figures: When set to True, Python will
+              make figures similar to the figures in the
+              paper. You must have previously run (or be
+              currently running) main.py with do_load_data,
+              do_2023_short, do_2023_long, do_Fisk, do_InvG,
+              and do_CSS_InvG set to true. If you run
+              main.py with this switch enabled, and you get
+              an error about a missing file, that means you
+              didn't previously run one of the other
+              analyses.
+
+        x.    do_test: Allows you to run miscellaneous
+              code at the bottom of main.py. Used for
+              testing purposes. Most of the time this
+              switch will be set to False.
+
+      If you want to set a given switch to True, you should
+      open main.py, go to lines 57-66, and replace the 
+      corresponding instance of the word False with the word
+      True. To disable the switch, change True back to False.
+
+  (5) Set to True whichever switches you want, and run Python
+      on main.py.
+
+                          ***
+
+              3. Replicate data extracts
+
+The data extracts are subsets of the public Current Population
+Survey microdata files. The full microdata files are too large
+to store on Github, but you can still reproduce the data
+extracts if you desire. Here is how to do that:
+
+  (1) Pick a directory where you want to make the data
+      extracts. Download gen_files.py from the repository and
+      put it in the directory.
+
+  (2) Go up one level from that directory and make a folder
+      called "data." (So data is at the same level as the 
+      folder where you stored gen_files.py.) Inside data,
+      make 55 folders called "<year> CPS," where <year>
+      ranges from 1967 through 2023. You can skip 1970
+      because that year is not available in the NBER's
+      repository.
+
+  (3) Go to the NBER's repository of Current Population Survey
+      Annual Demographic Files at
+
+      https://www.nber.org/research/data/current-population-
+survey-cps-supplements-annual-demographic-file
+
+      Download each zip file, and store it in the
+      corresponding <year> CPS folder from step 2. Then unzip
+      it. You should see a file that's named something like
+      "cpsmar67.dat." If you want the data dictionary, you
+      should also download the pdf file for that year from
+      the NBER's data repository.
+
+  (4) Run Python on gen_files.py.
+
+If you do not want to deal with creating this directory
+structure, you can also modify gen_files.py so that it
+expects a different directory structure.
+
+                          ***
+
+Good luck!
+
+
+
